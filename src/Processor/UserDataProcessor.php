@@ -52,10 +52,10 @@ class UserDataProcessor
     }
 
     /**
-     * @param string $patronymic
+     * @param string|null $patronymic
      * @return self
      */
-    public function setPatronymic(string $patronymic): self
+    public function setPatronymic(?string $patronymic): self
     {
         try {
             $this->patronymic = self::checkPatronymic($patronymic);
@@ -67,14 +67,16 @@ class UserDataProcessor
     }
 
     /**
-     * @param string $patronymic
-     * @return string
+     * @param string|null $patronymic
+     * @return string|null
      * @throws Exception
      */
-    private static function checkPatronymic(string $patronymic): string
+    private static function checkPatronymic(?string $patronymic): ?string
     {
-        if (!preg_match('/^[а-яё\-` ]+$/imu', $patronymic)) {
-            throw new Exception('Отчество содержит недопустимые символы');
+        if (!empty($patronymic)) {
+            if (!preg_match('/^[а-яё\-` ]+$/imu', $patronymic)) {
+                throw new Exception('Отчество содержит недопустимые символы');
+            }
         }
 
         return $patronymic;
@@ -89,13 +91,13 @@ class UserDataProcessor
     }
 
     /**
-     * @param string $birthDate
+     * @param string|null $birthDate
      * @return self
      */
-    public function setBirthDate(string $birthDate): self
+    public function setBirthDate(?string $birthDate): self
     {
         try {
-            $this->birthDate = Carbon::parse($birthDate);
+            $this->birthDate = $birthDate ? Carbon::parse($birthDate) : null;
         } catch (Exception $e) {
             echo 'Дата рождения содержит неверный формат данных';
         }
